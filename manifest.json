@@ -1,15 +1,16 @@
 {
-    "name": "Developers.org.ua Bookmarker 0.1",
-    "description": "Submits the current page to as suggestion for next Developers.org.ua weekly digest",
+    "name": "DOU Digester",
+    "description": "Recommends current page for next Developers.org.ua Weekly Digest. Source code for this extension here - http://github.com/dreamiurg/dou-chrome-ext",
     "version": "0.1",
     "background_page": "background.html",
+    "options_page": "options.html",
     "permissions": [
         "tabs", 
         "http://*/*", 
         "https://*/*"
     ],
     "browser_action": {
-        "default_title": "Suggest to DOU",
+        "default_title": "Отправить ссылку в DOU",
         "default_icon": "icon.png",
         "popup": "popup.html"
     }
