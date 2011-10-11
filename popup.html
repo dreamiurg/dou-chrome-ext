@@ -51,8 +51,8 @@
         if (req.readyState == 4)
           if (req.status == 200) {
             chrome.tabs.getSelected(null, function(tab) {
-              chrome.browserAction.setBadgeText({text: 'ok', tabid: tab.id});
-              chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255], tabid: tab.id});
+              chrome.browserAction.setBadgeText({text: 'ok', tabId: tab.id});
+              chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255], tabId: tab.id});
             });
 
             window.close();
