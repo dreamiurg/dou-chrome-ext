@@ -1,24 +1,24 @@
 {
-    "name": "DOU Digester",
-    "description": "Recommends current page for next Developers.org.ua Weekly Digest. Source code @ http://github.com/dreamiurg/dou-chrome-ext",
-    "icons": {
-        "16": "images/16.png",
-        "48": "images/48.png",
-        "128": "images/128.png"
-    },
+  "name": "DOU Digester",
+  "description": "Recommends current page for next Developers.org.ua Weekly Digest. Source code @ http://github.com/dreamiurg/dou-chrome-ext",
+  "icons": {
+    "16": "images/16.png",
+    "48": "images/48.png",
+    "128": "images/128.png"
+  },
 
-    "version": "0.1",
-    "background_page": "background.html",
-    "options_page": "options.html",
-    "permissions": [
-        "tabs",
-        "http://*/*",
-        "https://*/*"
-    ],
-    
-    "browser_action": {
-        "default_title": "Отправить ссылку в DOU",
-        "default_icon": "images/16.png",
-        "popup": "popup.html"
-    }
+  "version": "0.1",
+  "background_page": "background.html",
+  "options_page": "options.html",
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "browser_action": {
+    "default_title": "Отправить ссылку в DOU",
+    "default_icon": "images/16.png",
+    "popup": "popup.html"
+  }
 }

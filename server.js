@@ -4,14 +4,14 @@
 var express = require('express');
 
 var app = express.createServer(
-	express.logger('dev'),
-	express.bodyParser()
-	);
+    express.logger('dev'),
+    express.bodyParser()
+);
 
-app.post('/', function(req, res){
-    res.end();
-    console.log(req.body);
-	});
+app.post('/', function(req, res) {
+  res.end();
+  console.log(req.body);
+});
 
 app.listen(3000);
 

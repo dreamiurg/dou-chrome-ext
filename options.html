@@ -1,117 +1,120 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Options | DOU Digester</title>
+  <meta charset="utf-8">
+  <title>Options | DOU Digester</title>
 
-    <link href="reset.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, Verdana, sans-serif;
-            color: #444;
-        }
+  <link href="reset.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, Verdana, sans-serif;
+      color: #444;
+    }
 
-        label {
-            font-weight: bold;
-        }
+    label {
+      font-weight: bold;
+    }
 
-        #header {
-            padding: 10px 20px 10px 20px;
-            background: #f0f0f0;
-        }
+    #header {
+      padding: 10px 20px 10px 20px;
+      background: #f0f0f0;
+    }
 
-        #header h1 {
-            font-size: 25px;
-            font-weight: bold;
-        }
+    #header h1 {
+      font-size: 25px;
+      font-weight: bold;
+    }
 
-        #header small {
-            font-size: 11px;
-        }
+    #header small {
+      font-size: 11px;
+    }
 
-        #main {
-            padding: 10px 20px 10px 20px;
-            font-size: 18px;
-            line-height: 22px;
-            color: #0D0D0D;
-            margin-bottom: 5px;
-        }
+    #main {
+      padding: 10px 20px 10px 20px;
+      font-size: 18px;
+      line-height: 22px;
+      color: #0D0D0D;
+      margin-bottom: 5px;
+    }
 
-        #main p {
-            margin-bottom: 10px;
-        }
+    #main p {
+      margin-bottom: 10px;
+    }
 
-        #status {
-            padding: 10px 20px 10px 20px;
-            color: red;
-        }
+    #status {
+      padding: 10px 20px 10px 20px;
+      color: red;
+    }
 
-        input {
-            font-size: 20px;
-        }
+    input {
+      font-size: 20px;
+    }
 
-        a:link, a:visited {
-            color: #1876AC;
-            text-decoration: underline;
-        }
+    a:link, a:visited {
+      color: #1876AC;
+      text-decoration: underline;
+    }
 
-        a:hover {
-            color: #f93703;
-            text-decoration: none;
-        }
+    a:hover {
+      color: #f93703;
+      text-decoration: none;
+    }
 
 
-    </style>
-    <script type="text/javascript">
+  </style>
+  <script type="text/javascript">
 
-        // Saves options to localStorage.
-        function save_options() {
-            var email = document.getElementById("email").value;
-            localStorage["email"] = email;
+    // Saves options to localStorage.
+    function save_options() {
+      var email = document.getElementById("email").value;
+      localStorage["email"] = email;
 
-            // Update status to let user know options were saved.
-            var status = document.getElementById("status");
-            status.innerHTML = "Options saved";
-            setTimeout(function() {
-                status.innerHTML = "";
-            }, 1500);
-        }
+      // Update status to let user know options were saved.
+      var status = document.getElementById("status");
+      status.innerHTML = "Options saved";
+      setTimeout(function() {
+        status.innerHTML = "";
+      }, 1500);
+    }
 
-        // Restores select box state to saved value from localStorage.
-        function restore_options() {
-            var email = localStorage["email"];
-            if (!email) {
-                return;
-            }
-            var email_input = document.getElementById("email");
-            email_input.value = email;
-        }
+    // Restores select box state to saved value from localStorage.
+    function restore_options() {
+      var email = localStorage["email"];
+      if (!email) {
+        return;
+      }
+      var email_input = document.getElementById("email");
+      email_input.value = email;
+    }
 
-    </script>
+  </script>
 
 <body onload="restore_options()">
 
 <div id="header">
-    <div><h1>DOU Digester</h1></div>
-    <div><small>
-        <a href="http://twitter.com/dreamiurg">@dreamiurg</a> |
-        <a href="http://github.com/dreamiurg/dou-chrome-ext">github.com/dreamiurg/dou-chrome-ext</a>
-    </small></div>
+  <div><h1>DOU Digester</h1></div>
+  <div>
+    <small>
+      <a href="http://twitter.com/dreamiurg">@dreamiurg</a> |
+      <a href="http://github.com/dreamiurg/dou-chrome-ext">github.com/dreamiurg/dou-chrome-ext</a>
+    </small>
+  </div>
 </div>
 
 <div id="main">
-    <p>Не забывайте делиться с <a href="http://developers.org.ua">developers.org.ua</a> интересными
-        ссылками с использованием волшебной кнопки или просто по почте. Дайждест недели выходит по пятницам.</p>
+  <p>Не забывайте делиться с <a href="http://developers.org.ua">developers.org.ua</a> интересными
+    ссылками с использованием волшебной кнопки или просто по почте. Дайждест недели выходит по
+    пятницам.</p>
 
-    <p>
-        <label for="email">Email для обратной связи (опционально):</label><br/>
-        <input type="text" id="email" name="title" size="50" value=""/>
-    </p>
+  <p>
+    <label for="email">Email для обратной связи (опционально):</label><br/>
+    <input type="text" id="email" name="title" size="50" value=""/>
+  </p>
 
-    <p>
-        <button onclick="save_options()">Save options</button>
-        or <a href="#" onclick="window.close(); return false;">Close</a>
-    </p>
+  <p>
+    <button onclick="save_options()">Save options</button>
+    or <a href="#" onclick="window.close(); return false;">Close</a>
+  </p>
 </div>
 
 <div id="status"></div>
