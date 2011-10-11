@@ -1,0 +1,16 @@
+{
+    "name": "Developers.org.ua Bookmarker 0.1",
+    "description": "Submits the current page to as suggestion for next Developers.org.ua weekly digest",
+    "version": "0.1",
+    "background_page": "background.html",
+    "permissions": [
+        "tabs", 
+        "http://*/*", 
+        "https://*/*"
+    ],
+    "browser_action": {
+        "default_title": "Suggest to DOU",
+        "default_icon": "icon.png",
+        "popup": "popup.html"
+    }
+}
