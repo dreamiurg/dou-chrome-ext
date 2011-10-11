@@ -1,3 +1,6 @@
+// simple server for debug purposes
+// nothing more, nothing less
+
 var express = require('express');
 
 var app = express.createServer(
