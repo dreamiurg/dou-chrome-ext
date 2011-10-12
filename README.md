@@ -6,6 +6,9 @@
 
 ### HEAD
 
+### 0.3
+* Fixed manifest issues
+
 ### 0.2
 * Email address is shown in popup, along with link to options page
 * Fixed issue with blank fields after pushing extension button on blank page or chrome://extensions page
