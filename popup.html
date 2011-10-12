@@ -25,51 +25,43 @@
     }
 
     #scheme_warning {
+      display: none;
       color: #8b0000;
     }
   </style>
 
   <script type="text/javascript" src="jquery-1.6.4.js"></script>
+  <script type="text/javascript" src="jquery-ui-1.8.16.custom.min.js"></script>
   <script>
     function submitRecommendation() {
-      var req = new XMLHttpRequest();
-
       submit_url = "http://sudoku.org.ua/svoloshyn/lab/digest-bookmarklet.php";
 
       // to test this ext locally, run 'node server.js' in console
       // and uncomment the following line
-      submit_url = "http://localhost/";
+      submit_url = "http://localhost:3000/";
 
-      req.open("POST", submit_url, true);
+      // do not allow submit with empty url
+      if(!$('#u').val()) {
+        $("#u").effect('highlight', {}, 1000);
+        return false;
+      }
 
-      var params = $('form#recommendation').serialize();
-
-      req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      req.setRequestHeader("Content-length", params.length);
-      req.setRequestHeader("Connection", "close");
-
-      req.send(params);
-
-      req.onreadystatechange = function() {
-        // If the request completed, close the extension popup
-        if (req.readyState == 4) {
-          // sometimes status is 0, this bug is yet to be fixed
-          if (req.status == 200 || req.status == 0) {
-            chrome.tabs.getSelected(null, function(tab) {
-              chrome.browserAction.setBadgeText({text: 'ok', tabId: tab.id});
-              chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255], tabId: tab.id});
-            });
-
-            window.close();
-          }
+      $.ajax({
+        url: submit_url,
+        data: $('form#recommendation').serialize(),
+        type: 'POST',
+        // complete here instead of success due to nasty bug with status=0
+        complete: function() {
+          chrome.tabs.getSelected(null, function(tab) {
+            chrome.browserAction.setBadgeText({text: 'ok', tabId: tab.id});
+            chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255], tabId: tab.id});
+            self.close();
+          });
         }
-      };
+      });
 
       return false;
     }
-
-
-
 
     chrome.extension.onConnect.addListener(function(port) {
       // This will get called by the content script we execute in
@@ -92,6 +84,7 @@
 
     $(document).ready(function() {
       email = localStorage["email"];
+      // remember email in form
       $("#email").val(email);
 
       // show email user specified in options
@@ -101,29 +94,15 @@
         $("#email_msg").html("Вы не указали email для обратной связи");
       }
 
-      // open Options page upon click on options link
-      $('#options_link').click(function() {
-        extviews = chrome.extension.getViews({"type": "tab"});
-        options_url = chrome.extension.getURL('options.html');
-
-        function focusTab(tab) {
-          // Focus the given tab
-          chrome.tabs.update(tab.id, {"selected": true});
-        }
-
-        for (var i = 0; i++; i <= extviews.length) {
-          if (i == extviews.length) {
-            // Create new tab if past end of list and none open
-            chrome.tabs.create(options_url);
-          } else if (extviews[i].location.href == options_url) {
-            // Get the tab's object and focus the tab
-            extviews[i].chrome.tabs.getCurrent(focusTab);
-            break;
-          }
-        }
+      $('a#options').click(function() {
+        chrome.tabs.create({url: chrome.extension.getURL('options.html')});
+        window.close();
       });
 
-      $('#save').click(function() { submitRecommendation(); });
+      $('#save').click(function() {
+        submitRecommendation();
+        return false;
+      });
     });
 
     $("#msg").ajaxError(function(event, request, settings){
@@ -149,7 +128,7 @@
     <label for="description">О чем это?</label><br/>
     <textarea id="d" name="d" rows="4" cols="35"></textarea><br/>
     <small><strong>Hint</strong>: Выделите текст на странице перед тем, как нажать кнопку DOU, и он будет скопирован
-      сюда автоматически. <span id="email_msg"></span>, его можно настроить в <a href="#" id="options_link">опциях</a>.
+      сюда автоматически. <span id="email_msg"></span>, его можно настроить в <a href="#" id="options">опциях</a>.
     </small>
   </p>
   <p align="right">
