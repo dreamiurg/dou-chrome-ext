@@ -6,6 +6,9 @@
 
 ### HEAD
 
+### 0.4
+* Switched back to sudoku server instead of localhost
+
 ### 0.3
 * Fixed manifest issues
 
