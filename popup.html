@@ -52,8 +52,9 @@
 
       req.onreadystatechange = function() {
         // If the request completed, close the extension popup
-        if (req.readyState == 4)
-          if (req.status == 200) {
+        if (req.readyState == 4) {
+          // sometimes status is 0, this bug is yet to be fixed
+          if (req.status == 200 || req.status == 0) {
             chrome.tabs.getSelected(null, function(tab) {
               chrome.browserAction.setBadgeText({text: 'ok', tabId: tab.id});
               chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255], tabId: tab.id});
@@ -61,15 +62,13 @@
 
             window.close();
           }
+        }
       };
 
       return false;
     }
 
-    function focusTab(tab) {
-      // Focus the given tab
-      chrome.tabs.update(tab.id, {"selected": true});
-    }
+
 
 
     chrome.extension.onConnect.addListener(function(port) {
@@ -104,8 +103,13 @@
 
       // open Options page upon click on options link
       $('#options_link').click(function() {
-        extviews = chrome.extension.getViews({"type": "tab"})
+        extviews = chrome.extension.getViews({"type": "tab"});
         options_url = chrome.extension.getURL('options.html');
+
+        function focusTab(tab) {
+          // Focus the given tab
+          chrome.tabs.update(tab.id, {"selected": true});
+        }
 
         for (var i = 0; i++; i <= extviews.length) {
           if (i == extviews.length) {
