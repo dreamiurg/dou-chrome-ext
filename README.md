@@ -5,10 +5,13 @@
 ## Changelog
 
 ### HEAD
-* Revised messages mechanism, using postMessage() instead
-* Content script is loaded for http:// and https:// pages only, warning is shown for other schemas
-* Email address is shown in popup
-* Minor style changes
+
+### 0.2
+* Email address is shown in popup, along with link to options page
+* Fixed issue with blank fields after pushing extension button on blank page or chrome://extensions page
+* For is not submitted when URL field is empty
+* Internal: Revised messages mechanism, using postMessage() instead
+* Internal: Content script is loaded for http:// and https:// pages only, warning is shown for other schemas
 
 ### 0.1
 * Initial release
