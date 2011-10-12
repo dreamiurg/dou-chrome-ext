@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <style>
     body {
-      min-width: 300px;
-      max-width: 300px;
+      width: 350px;
       overflow-x: hidden;
       font-family: Arial, sans-serif;
       font-size: 12px;
     }
 
     input, textarea {
-      width: 300px;
+      width: 350px;
+      font-size: 11px;
     }
 
     input#save {
@@ -23,15 +23,13 @@
     label {
       font-weight: bold;
     }
+
+    #scheme_warning {
+      color: #8b0000;
+    }
   </style>
   <script>
-    function onPageInfo(o) {
-      document.getElementById("title").value = o.title;
-      document.getElementById("url").value = o.url;
-      document.getElementById("description").innerText = o.description;
-    }
-
-    function addBookmark(f) {
+    function submitRecommendation(f) {
       var req = new XMLHttpRequest();
 
       submit_url = "http://sudoku.org.ua/svoloshyn/lab/digest-bookmarklet.php";
@@ -70,17 +68,34 @@
       return false;
     }
 
-    // Call the getPageInfo function in the background page, passing in
-    // our onPageInfo function as the callback
+    chrome.extension.onConnect.addListener(function(port) {
+      console.log('popup chrome.extension.onConnect.addListener');
+        // This will get called by the content script we execute in
+        // the tab as a result of the user pressing the browser action.
+        port.onMessage.addListener(function(pageInfo) {
+          document.getElementById("title").value = pageInfo.title;
+          document.getElementById("url").value = pageInfo.url;
+          document.getElementById("description").innerText = pageInfo.description;
+        });
+    });
+
+    chrome.tabs.getSelected(null, function(tab) {
+      if (tab.url.indexOf('http:') == 0 || tab.url.indexOf('https:') == 0) {
+        chrome.tabs.executeScript(null, {file: "content_script.js"});
+        document.getElementById("scheme_warning").style.display = 'none';
+      } else {
+        document.getElementById("scheme_warning").style.display = 'block';
+      }
+    });
+    
     window.onload = function() {
-      var bg = chrome.extension.getBackgroundPage();
-      bg.getPageInfo(onPageInfo);
-    }
+      document.getElementById("email").innerHTML = localStorage["email"];
+    };
   </script>
 </head>
 
 <body>
-<form id="addbookmark" onsubmit="addBookmark(this); return false;">
+<form onsubmit="submitRecommendation(this); return false;">
   <p>
     <label for="title">Название</label><br/>
     <input type="text" id="title" name="title" size="50" value=""/>
@@ -94,12 +109,14 @@
   <p>
     <label for="description">О чем это?</label><br/>
     <textarea id="description" name="description" rows="4" cols="35"></textarea><br/>
-    <small><strong>Hint</strong>: Выделите текст на странице перед тем, как нажать кнопку DOU, и
-      он будет скопирован сюда автоматически.
+    <small><strong>Hint</strong>: Выделите текст на странице перед тем, как нажать кнопку DOU, и он будет скопирован сюда автоматически. Для обратной связи вы указали email &lt;<span id="email"></span>&gt;, его можно настроить в опциях.
     </small>
   </p>
   <p align="right">
     <input id="save" type="submit" value="Отправить ссылку в DOU"/>
+  </p>
+  <p id="scheme_warning">
+    Названия, URL и описание страницы подставляется автоматически только для протоколов http:// и https://
   </p>
 </form>
 </body>

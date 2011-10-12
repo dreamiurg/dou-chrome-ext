@@ -1,9 +1,8 @@
-// Object to hold information about the current page
 var pageInfo = {
   "title": document.title,
   "url": window.location.href,
   "description": window.getSelection().toString()
 };
 
-// Send the information back to the extension
-chrome.extension.sendRequest(pageInfo);
+// pass information to listeners, presumably in popup.html
+chrome.extension.connect().postMessage(pageInfo);
