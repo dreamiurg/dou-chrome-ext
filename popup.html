@@ -12,7 +12,7 @@
 
     input, textarea {
       width: 350px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     input#save {
@@ -28,23 +28,21 @@
       color: #8b0000;
     }
   </style>
+
+  <script type="text/javascript" src="jquery-1.6.4.js"></script>
   <script>
-    function submitRecommendation(f) {
+    function submitRecommendation() {
       var req = new XMLHttpRequest();
 
       submit_url = "http://sudoku.org.ua/svoloshyn/lab/digest-bookmarklet.php";
 
       // to test this ext locally, run 'node server.js' in console
       // and uncomment the following line
-      // submit_url = "http://localhost:3000/";
+      submit_url = "http://localhost/";
 
       req.open("POST", submit_url, true);
 
-      var params =
-          "email=" + localStorage["email"] +
-          "&u=" + document.getElementById("url").value +
-          "&s=" + document.getElementById("title").value +
-          "&d=" + document.getElementById("description").value;
+      var params = $('form#recommendation').serialize();
 
       req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       req.setRequestHeader("Content-length", params.length);
@@ -68,56 +66,97 @@
       return false;
     }
 
+    function focusTab(tab) {
+      // Focus the given tab
+      chrome.tabs.update(tab.id, {"selected": true});
+    }
+
+
     chrome.extension.onConnect.addListener(function(port) {
-      console.log('popup chrome.extension.onConnect.addListener');
-        // This will get called by the content script we execute in
-        // the tab as a result of the user pressing the browser action.
-        port.onMessage.addListener(function(pageInfo) {
-          document.getElementById("title").value = pageInfo.title;
-          document.getElementById("url").value = pageInfo.url;
-          document.getElementById("description").innerText = pageInfo.description;
-        });
+      // This will get called by the content script we execute in
+      // the tab as a result of the user pressing the browser action.
+      port.onMessage.addListener(function(pageInfo) {
+        $("#u").val(pageInfo.url);
+        $("#s").val(pageInfo.title);
+        $("#d").text(pageInfo.description);
+      });
     });
 
     chrome.tabs.getSelected(null, function(tab) {
       if (tab.url.indexOf('http:') == 0 || tab.url.indexOf('https:') == 0) {
         chrome.tabs.executeScript(null, {file: "content_script.js"});
-        document.getElementById("scheme_warning").style.display = 'none';
+        $("#scheme_warning").hide();
       } else {
-        document.getElementById("scheme_warning").style.display = 'block';
+        $("#scheme_warning").show();
       }
     });
-    
-    window.onload = function() {
-      document.getElementById("email").innerHTML = localStorage["email"];
-    };
+
+    $(document).ready(function() {
+      email = localStorage["email"];
+      $("#email").val(email);
+
+      // show email user specified in options
+      if (email) {
+        $("#email_msg").html("Для обратной связи вы указали email &lt;" + email + "&gt;");
+      } else {
+        $("#email_msg").html("Вы не указали email для обратной связи");
+      }
+
+      // open Options page upon click on options link
+      $('#options_link').click(function() {
+        extviews = chrome.extension.getViews({"type": "tab"})
+        options_url = chrome.extension.getURL('options.html');
+
+        for (var i = 0; i++; i <= extviews.length) {
+          if (i == extviews.length) {
+            // Create new tab if past end of list and none open
+            chrome.tabs.create(options_url);
+          } else if (extviews[i].location.href == options_url) {
+            // Get the tab's object and focus the tab
+            extviews[i].chrome.tabs.getCurrent(focusTab);
+            break;
+          }
+        }
+      });
+
+      $('#save').click(function() { submitRecommendation(); });
+    });
+
+    $("#msg").ajaxError(function(event, request, settings){
+  $(this).append("<li>Error requesting page " + settings.url + "</li>");
+});
   </script>
 </head>
 
 <body>
-<form onsubmit="submitRecommendation(this); return false;">
+<form id="recommendation">
+  <input type="hidden" id="email" name="email" value=""/>
   <p>
     <label for="title">Название</label><br/>
-    <input type="text" id="title" name="title" size="50" value=""/>
+    <input type="text" id="s" name="s" size="50" value=""/>
   </p>
 
   <p>
     <label for="url">URL</label><br/>
-    <input type="text" id="url" name="url" size="50" value=""/>
+    <input type="text" id="u" name="u" size="50" value=""/>
   </p>
 
   <p>
     <label for="description">О чем это?</label><br/>
-    <textarea id="description" name="description" rows="4" cols="35"></textarea><br/>
-    <small><strong>Hint</strong>: Выделите текст на странице перед тем, как нажать кнопку DOU, и он будет скопирован сюда автоматически. Для обратной связи вы указали email &lt;<span id="email"></span>&gt;, его можно настроить в опциях.
+    <textarea id="d" name="d" rows="4" cols="35"></textarea><br/>
+    <small><strong>Hint</strong>: Выделите текст на странице перед тем, как нажать кнопку DOU, и он будет скопирован
+      сюда автоматически. <span id="email_msg"></span>, его можно настроить в <a href="#" id="options_link">опциях</a>.
     </small>
   </p>
   <p align="right">
-    <input id="save" type="submit" value="Отправить ссылку в DOU"/>
+    <button id="save">Отправить ссылку в DOU</button>
   </p>
+
   <p id="scheme_warning">
     Названия, URL и описание страницы подставляется автоматически только для протоколов http:// и https://
   </p>
+
+  <div id="msg"></div>
 </form>
 </body>
 </html>
